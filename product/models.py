@@ -66,7 +66,7 @@ class Product(BaseModel):
     slug = models.SlugField(blank=True)
     description = models.TextField()
     price = models.FloatField()
-    rating = models.PositiveSmallIntegerField(choices=RatingChoices.choices, default=RatingChoices.One.value)
+    rating = models.ManyToManyField(User, choices=RatingChoices.choices, default=RatingChoices.One.value)
     is_liked = models.ManyToManyField(User, related_name='liked_products', blank=True)
     category = models.ForeignKey(SubCategory, on_delete=models.CASCADE, related_name='category')
 
@@ -112,7 +112,7 @@ class Comment(BaseModel):
     comment = models.TextField()
     media_file = models.FileField(upload_to='comments/', blank=True, null=True)
     is_published = models.BooleanField(default=True)
-    product_id = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments')
 
     def __str__(self):
         return self.name
