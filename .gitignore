@@ -112,7 +112,6 @@ product/migrations/*
 cache/
 !archives/product/__init__.py
 !archives/category/__init__.py
-archives/10.py
 
 # Spyder project settings
 .spyderproject

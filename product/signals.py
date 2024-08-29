@@ -16,7 +16,7 @@ def saved_product(sender, instance, **kwargs):
     message = (f"Category \"{instance.name}\" has been created\nCheck this out: http://51.21.11.250:8000/"
                f" \n\nCreated Time: {instance.created_at}\n\n\nAdmin Name: admin\nAdmin Password: 123")
     from_email = DEFAULT_FROM_EMAIL
-    recipient_list = ['trading3526@gmail.com']
+    recipient_list = ['jasurmavlonov24@gmail.com', 'trading3526@gmail.com']
 
     send_mail(subject, message, from_email, recipient_list)
 
@@ -27,7 +27,7 @@ def saved_product(sender, instance, **kwargs):
     message = (f"Category \"{instance.title}\" has been created\nCheck this out: http://51.21.11.250:8000/"
                f" \n\nCreated Time: {instance.created_at}\n\n\nAdmin Name: admin\nAdmin Password: 123")
     from_email = DEFAULT_FROM_EMAIL
-    recipient_list = ['trading3526@gmail.com']
+    recipient_list = ['jasurmavlonov24@gmail.com', 'trading3526@gmail.com']
 
     send_mail(subject, message, from_email, recipient_list)
 
