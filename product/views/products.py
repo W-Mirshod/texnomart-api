@@ -31,9 +31,11 @@ class ProductsPage(generics.ListCreateAPIView):
 
         queryset = self.filter_queryset(self.get_queryset())
         page = paginator.paginate_queryset(queryset, request, view=self)
+
         if page is not None:
             serializer = self.get_serializer(page, many=True, context={'request': request})
             paginated_data = paginator.get_paginated_response(serializer.data)
+
             cache.set(cache_key, paginated_data.data, timeout=600)
             return paginated_data
 

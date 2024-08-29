@@ -169,6 +169,7 @@ CACHES = {
             'BACKEND': "django.core.cache.backends.filebased.FileBasedCache",
             'LOCATION': BASE_DIR / 'cache',
         },
+
     'redis': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
         'LOCATION': 'redis://redis-cluster.abc123.0001.use1.cache.amazonaws.com:6379/1',
