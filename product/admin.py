@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from product.models import Category, Product, Image, Comment, Rating
+from product.models import Category, Product, Image, Comment, Rating, Key, Value, Attribute
 
 
 @admin.register(Category)
@@ -35,3 +35,24 @@ class RatingAdmin(admin.ModelAdmin):
     list_display = ['user', 'product', 'value', 'created_at']
     search_fields = ['user', 'product']
     list_filter = ['user', 'product', 'created_at']
+
+
+@admin.register(Key)
+class KeyAdmin(admin.ModelAdmin):
+    list_display = ['name', 'created_at']
+    search_fields = ['name']
+    list_filter = ['name', 'created_at']
+
+
+@admin.register(Value)
+class KeyAdmin(admin.ModelAdmin):
+    list_display = ['name', 'created_at']
+    search_fields = ['name']
+    list_filter = ['name', 'created_at']
+
+
+@admin.register(Attribute)
+class AttributeAdmin(admin.ModelAdmin):
+    list_display = ['key', 'value', 'product', 'created_at']
+    search_fields = ['key', 'product']
+    list_filter = ['key', 'product', 'created_at']

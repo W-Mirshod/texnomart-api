@@ -18,9 +18,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+from product.views.auth import ObtainAuthTokenPage
 
 urlpatterns = [
                   path('admin/', admin.site.urls),
                   path('texnomart-uz/', include('product.urls')),
-                  path('api-auth/', include('rest_framework.urls'))
+                  path('texnomart-uz/token-auth/', ObtainAuthTokenPage.as_view()),
+                  path('texnomart-uz/api/token/', TokenObtainPairView.as_view(),),
+                  path('texnomart-uz/api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
