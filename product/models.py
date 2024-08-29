@@ -11,25 +11,9 @@ class BaseModel(models.Model):
         abstract = True
 
 
-class MainCategory(BaseModel):
-    title = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(blank=True)
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name_plural = 'Categories'
-
-
-class SubCategory(BaseModel):
+class Category(BaseModel):
     title = models.CharField(max_length=100)
     slug = models.SlugField(blank=True)
-    related_category = models.ForeignKey(MainCategory, on_delete=models.CASCADE, related_name='related_category')
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -39,36 +23,28 @@ class SubCategory(BaseModel):
             i = 1
             while True:
                 new_slug = f"{slugify(self.title)}-{i}"
-                if not SubCategory.objects.filter(slug=new_slug).exists():
+                if not Category.objects.filter(slug=new_slug).exists():
                     self.slug = new_slug
                     break
                 i += 1
 
-        super(SubCategory, self).save(*args, **kwargs)
+        super(Category, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
 
     class Meta:
-        verbose_name_plural = 'Sub-categories'
+        verbose_name_plural = 'Categories'
 
 
 class Product(BaseModel):
-    class RatingChoices(models.TextChoices):
-        Zero = '0'
-        One = '1'
-        Two = '2'
-        Three = '3'
-        Four = '4'
-        Five = '5'
-
     name = models.CharField(max_length=150)
     slug = models.SlugField(blank=True)
     description = models.TextField()
     price = models.FloatField()
-    rating = models.ManyToManyField(User, choices=RatingChoices.choices, default=RatingChoices.One.value)
+    discount = models.PositiveIntegerField(default=0)
     is_liked = models.ManyToManyField(User, related_name='liked_products', blank=True)
-    category = models.ForeignKey(SubCategory, on_delete=models.CASCADE, related_name='category')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='category')
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -85,8 +61,31 @@ class Product(BaseModel):
 
         super(Product, self).save(*args, **kwargs)
 
+    @property
+    def discounted_price(self):
+        if self.discount:
+            return self.price * (1 - (self.discount / 100))
+        return self.price
+
     def __str__(self):
         return self.name
+
+
+class Rating(BaseModel):
+    class RatingChoices(models.TextChoices):
+        Zero = '0'
+        One = '1'
+        Two = '2'
+        Three = '3'
+        Four = '4'
+        Five = '5'
+
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ratings')
+    value = models.CharField(max_length=25, choices=RatingChoices.choices, default=RatingChoices.One.value)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['user', 'product'], name='unique_rating'), ]
 
 
 class Image(BaseModel):

@@ -1,18 +1,11 @@
 from django.contrib import admin
 
-from product.models import MainCategory, SubCategory, Product, Image, Comment
+from product.models import Category, Product, Image, Comment, Rating
 
 
-@admin.register(MainCategory)
-class MainCategoryAdmin(admin.ModelAdmin):
-    list_display = ['title', 'slug', 'updated_at', 'created_at']
-    search_fields = ['title', 'slug']
-    list_filter = ['title', 'created_at']
-
-
-@admin.register(SubCategory)
+@admin.register(Category)
 class SubCategoryAdmin(admin.ModelAdmin):
-    list_display = ['title', 'slug', 'related_category', 'updated_at', 'created_at']
+    list_display = ['title', 'slug', 'updated_at', 'created_at']
     search_fields = ['title', 'slug']
     list_filter = ['title', 'created_at']
 
@@ -35,3 +28,10 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ['name', 'email', 'is_published', 'created_at']
     search_fields = ['name', 'email']
     list_filter = ['product', 'created_at']
+
+
+@admin.register(Rating)
+class RatingAdmin(admin.ModelAdmin):
+    list_display = ['user', 'product', 'value', 'created_at']
+    search_fields = ['user', 'product']
+    list_filter = ['user', 'product', 'created_at']
