@@ -16,6 +16,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ['name', 'slug', 'category', 'price', 'created_at']
     search_fields = ['name', 'slug']
     list_filter = ['name', 'price', 'created_at']
+    exclude = ['slug']
 
 
 @admin.register(Image)

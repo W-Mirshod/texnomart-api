@@ -1,3 +1,5 @@
+from datetime import timezone as dt_timezone, timedelta
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.text import slugify
@@ -6,6 +8,17 @@ from django.utils.text import slugify
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        tz_offset = timedelta(hours=10)
+        tz = dt_timezone(tz_offset)
+
+        if self.created_at:
+            self.created_at = self.created_at.astimezone(tz)
+        if self.updated_at:
+            self.updated_at = self.updated_at.astimezone(tz)
+
+        super(BaseModel, self).save(*args, **kwargs)
 
     class Meta:
         abstract = True
@@ -40,9 +53,9 @@ class Category(BaseModel):
 class Product(BaseModel):
     name = models.CharField(max_length=150)
     slug = models.SlugField(blank=True)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     price = models.FloatField()
-    discount = models.PositiveIntegerField(default=0)
+    discount = models.PositiveIntegerField(default=0, blank=True)
     is_liked = models.ManyToManyField(User, related_name='liked_products', blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='category')
 

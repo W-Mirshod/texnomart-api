@@ -176,11 +176,11 @@ EMAIL_HOST_PASSWORD = 'vizr qhlf eazo kzxw'
 DEFAULT_FROM_EMAIL = 'python3526@gmail.com'
 
 JAZZMIN_SETTINGS = {
-    'site_title': 'Online Course',
-    'site_header': 'E-Platform',
-    'site_brand': 'E-Courses',
+    'site_title': 'Texnomart',
+    'site_header': 'Texnomart',
+    'site_brand': 'Texnomart',
     'welcome_sign': 'Welcome to the Admin Area',
-    'copyright': 'Najot Ta\'lim',
+    'copyright': 'Texnomart',
     'search_model': 'auth.User',
     'user_avatar': 'admin.ico',
 
