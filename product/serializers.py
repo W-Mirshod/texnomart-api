@@ -10,7 +10,7 @@ class ProductOnMainPageSerializer(serializers.ModelSerializer):
     slug = serializers.ReadOnlyField()
     images = serializers.SerializerMethodField()
     is_liked = serializers.SerializerMethodField()
-    category = serializers.SerializerMethodField()
+    category_name = serializers.SerializerMethodField()
     comment_count = serializers.SerializerMethodField()
     average_rating = serializers.SerializerMethodField()
 
@@ -39,13 +39,13 @@ class ProductOnMainPageSerializer(serializers.ModelSerializer):
     def get_comment_count(self, obj):
         return obj.comments.count()
 
-    def get_category(self, obj):
+    def get_category_name(self, obj):
         return obj.category.slug
 
     class Meta:
         model = Product
         fields = ['name', 'slug', 'description', 'price', 'discounted_price', 'images', 'average_rating', 'is_liked',
-                  'comment_count', 'category', 'created_at']
+                  'comment_count', 'category', 'category_name', 'created_at']
 
 
 class ProductSerializer(serializers.ModelSerializer):

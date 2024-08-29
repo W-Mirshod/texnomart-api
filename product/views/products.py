@@ -1,30 +1,41 @@
 from django.core.cache import cache
 from rest_framework import generics, status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from product import serializers
 from product.models import Product, Key, Value
+from product.permissions import IsSuperUser
 
 
 class ProductsPage(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = serializers.ProductOnMainPageSerializer
     queryset = Product.objects.all()
+    pagination_class = PageNumberPagination
 
     def get(self, request, *args, **kwargs):
-        cache_key = f'products_page_{request.GET.get("page", 1)}'
-        product_data = cache.get(cache_key)
+        paginator = self.pagination_class()
+        page_number = request.GET.get('page', 1)
+        cache_key = f'products_page_{page_number}'
 
         cached_data = cache.get(cache_key)
         if cached_data:
-            return Response(product_data, status=status.HTTP_200_OK)
-        products = Product.objects.all()
-        serializer = serializers.ProductOnMainPageSerializer(products, many=True, context={'request': request})
-        product_data = serializer.data
-        cache.set(cache_key, product_data, timeout=600)
+            return Response(cached_data, status=status.HTTP_200_OK)
 
-        return Response(product_data, status=status.HTTP_200_OK)
+        queryset = self.get_queryset()
+
+        page = paginator.paginate_queryset(queryset, request, view=self)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True, context={'request': request})
+            paginated_data = paginator.get_paginated_response(serializer.data)
+
+            cache.set(cache_key, paginated_data.data, timeout=600)
+            return paginated_data
+
+        serializer = self.get_serializer(queryset, many=True, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ProductDetailPage(generics.RetrieveAPIView):
@@ -35,14 +46,14 @@ class ProductDetailPage(generics.RetrieveAPIView):
 
 
 class ProductDeletePage(generics.RetrieveDestroyAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsSuperUser]
     serializer_class = serializers.ProductSerializer
     queryset = Product.objects.all()
     lookup_field = 'slug'
 
 
 class ProductUpdatePage(generics.RetrieveUpdateAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsSuperUser]
     serializer_class = serializers.ProductSerializer
     queryset = Product.objects.all()
     lookup_field = 'slug'
