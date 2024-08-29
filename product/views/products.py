@@ -1,10 +1,12 @@
 from django.core.cache import cache
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from product import serializers
+from product.filters import ProductFilter
 from product.models import Product, Key, Value
 from product.permissions import IsSuperUser
 
@@ -14,6 +16,8 @@ class ProductsPage(generics.ListCreateAPIView):
     serializer_class = serializers.ProductOnMainPageSerializer
     queryset = Product.objects.all()
     pagination_class = PageNumberPagination
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = ProductFilter
 
     def get(self, request, *args, **kwargs):
         paginator = self.pagination_class()

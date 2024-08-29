@@ -3,7 +3,7 @@ from django.core.exceptions import MultipleObjectsReturned
 from django.db.models import Avg
 from rest_framework import serializers
 
-from product.models import Product, Category, Key, Value
+from product.models import Product, Category, Key, Value, Attribute
 
 
 class ProductOnMainPageSerializer(serializers.ModelSerializer):
@@ -165,6 +165,12 @@ class KeySerializer(serializers.ModelSerializer):
 class ValueSerializer(serializers.ModelSerializer):
     class Meta:
         model = Value
+        fields = '__all__'
+
+
+class AttributeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attribute
         fields = '__all__'
 
 

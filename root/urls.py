@@ -21,12 +21,14 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
+
 from product.views.auth import ObtainAuthTokenPage
-from product.views.viewsets import ProductsViewSet, CategoryViewSet
+from product.views.viewsets import ProductsViewSet, CategoryViewSet, AttributeViewSet
 
 router = DefaultRouter()
 router.register(r'Products on Main Page', ProductsViewSet)
 router.register(r'Categories', CategoryViewSet)
+router.register(r'Attributes', AttributeViewSet)
 
 urlpatterns = [
                   path('admin/', admin.site.urls),
