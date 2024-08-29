@@ -8,6 +8,7 @@ class SubCategoryAdmin(admin.ModelAdmin):
     list_display = ['title', 'slug', 'updated_at', 'created_at']
     search_fields = ['title', 'slug']
     list_filter = ['title', 'created_at']
+    exclude = ['slug']
 
 
 @admin.register(Product)

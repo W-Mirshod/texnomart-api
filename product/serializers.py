@@ -104,6 +104,8 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class CategoryDeleteUpdateSerializer(serializers.ModelSerializer):
+    slug = serializers.ReadOnlyField()
+
     class Meta:
         model = Category
         fields = '__all__'
