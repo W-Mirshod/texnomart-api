@@ -10,11 +10,12 @@ from product import serializers
 from product.filters import CategoryFilter
 from product.models import Category, Product
 from product.permissions import IsSuperUser
+from product.serializers import CategorySerializer
 
 
 class CategoriesPage(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
-    serializer_class = serializers.CategorySerializer
+    serializer_class = CategorySerializer
     queryset = Category.objects.all()
     pagination_class = PageNumberPagination
     filter_backends = (DjangoFilterBackend,)
@@ -23,14 +24,13 @@ class CategoriesPage(generics.ListCreateAPIView):
     def get(self, request, *args, **kwargs):
         paginator = self.pagination_class()
         page_number = request.GET.get("page", 1)
+        cache_key = f'categories_page_{page_number}_{request.GET.urlencode()}'
 
-        cache_key = f'categories_page_{page_number}'
         cached_data = cache.get(cache_key)
-
         if cached_data:
             return Response(cached_data, status=status.HTTP_200_OK)
 
-        queryset = self.get_queryset()
+        queryset = self.filter_queryset(self.get_queryset())
         page = paginator.paginate_queryset(queryset, request)
 
         if page is not None:

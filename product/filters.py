@@ -4,22 +4,19 @@ from product.models import Product, Category
 
 
 class ProductFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(field_name='name', lookup_expr='icontains')
+    min_price = django_filters.NumberFilter(field_name='price', lookup_expr='gte')
+    max_price = django_filters.NumberFilter(field_name='price', lookup_expr='lte')
+
     class Meta:
         model = Product
-        fields = {
-            'category': ['exact'],
-            'price': ['lt', 'gt'], }
+        fields = ['name', 'min_price', 'max_price']
 
 
 class CategoryFilter(django_filters.FilterSet):
-    title = django_filters.CharFilter(lookup_expr='icontains', label='Title contains')
-    slug = django_filters.CharFilter(lookup_expr='exact', label='Exact Slug')
-    custom_field = django_filters.NumberFilter(method='filter_custom_field')
+    title = django_filters.CharFilter(field_name='title', lookup_expr='icontains')
+    slug = django_filters.CharFilter(field_name='slug', lookup_expr='icontains')
 
     class Meta:
         model = Category
         fields = ['title', 'slug']
-
-    def filter_custom_field(self, queryset, name, value):
-        # Example custom filtering logic
-        return queryset.filter(some_related_model__price=value)

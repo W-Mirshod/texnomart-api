@@ -9,11 +9,12 @@ from product import serializers
 from product.filters import ProductFilter
 from product.models import Product, Key, Value
 from product.permissions import IsSuperUser
+from product.serializers import ProductOnMainPageSerializer
 
 
 class ProductsPage(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
-    serializer_class = serializers.ProductOnMainPageSerializer
+    serializer_class = ProductOnMainPageSerializer
     queryset = Product.objects.all()
     pagination_class = PageNumberPagination
     filter_backends = (DjangoFilterBackend,)
@@ -22,19 +23,17 @@ class ProductsPage(generics.ListCreateAPIView):
     def get(self, request, *args, **kwargs):
         paginator = self.pagination_class()
         page_number = request.GET.get('page', 1)
-        cache_key = f'products_page_{page_number}'
+        cache_key = f'products_page_{page_number}_{request.GET.urlencode()}'
 
         cached_data = cache.get(cache_key)
         if cached_data:
             return Response(cached_data, status=status.HTTP_200_OK)
 
-        queryset = self.get_queryset()
-
+        queryset = self.filter_queryset(self.get_queryset())
         page = paginator.paginate_queryset(queryset, request, view=self)
         if page is not None:
             serializer = self.get_serializer(page, many=True, context={'request': request})
             paginated_data = paginator.get_paginated_response(serializer.data)
-
             cache.set(cache_key, paginated_data.data, timeout=600)
             return paginated_data
 
