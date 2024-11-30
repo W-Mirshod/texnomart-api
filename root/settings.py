@@ -185,13 +185,13 @@ CACHES = {
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # google configuration
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'python3526@gmail.com'
-EMAIL_HOST_PASSWORD = 'vizr qhlf eazo kzxw'
-DEFAULT_FROM_EMAIL = 'python3526@gmail.com'
+EMAIL_BACKEND = env('EMAIL_BACKEND')
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_USE_TLS = env('EMAIL_USE_TLS')
+EMAIL_PORT = env('EMAIL_PORT')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
 
 JAZZMIN_SETTINGS = {
     'site_title': 'Texnomart',
